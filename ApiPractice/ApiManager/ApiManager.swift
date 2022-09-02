@@ -9,29 +9,25 @@ import Foundation
 import UIKit
 
 protocol ApiManagerDelegate {
-    func showPokemonList(list:[Pokemon])
+    func showPokemonList(items:[Pokemon])
 }
 
 struct ApiManager {
     var delegado: ApiManagerDelegate?
 
-//    Show Pokemones
-    func showPokemon() {
+    //    Get Pokemons
+    func getPokemon() {
         let urlString = "https://pokedex-bb36f.firebaseio.com/pokemon.json"
-        
         if let url = URL(string: urlString) {
             let session = URLSession(configuration: .default)
-            
             let task = session.dataTask(with: url) { data, _, error in
-                if error != nil {
-                    print("Error getting data from API", error?.localizedDescription)
+                if let error = error {
+                    print(error)
                 }
                 
-                if let secureData = data?.parseData(deleteString: "null,") {
-                    if let listAPI = self.parsearJSON(apiData: secureData) {
-                        
-                        delegado?.showPokemonList(list: listAPI)
-                    }
+                if let data = data?.parseData(deleteString: "null,"),
+                   let pokemons = self.parsearJSON(apiData: data) {
+                    delegado?.showPokemonList(items: pokemons)
                 }
             }
             task.resume()
@@ -39,14 +35,13 @@ struct ApiManager {
     }
     
 //    ParseJSON
-    
     func parsearJSON(apiData: Data) -> [Pokemon]? {
         let decoded = JSONDecoder()
         do {
             let decodedData = try decoded.decode([Pokemon].self, from: apiData)
             return decodedData
         }catch {
-            print("Error al decodicaficar los datos: ", error.localizedDescription)
+            print(error.localizedDescription)
             return nil
         }
     }
@@ -60,19 +55,5 @@ extension Data {
         let parseDataString = dataAsString?.replacingOccurrences(of: word, with: "")
         guard let data = parseDataString?.data(using: .utf8) else { return nil }
         return data
-    }
-}
-
-extension UIImageView {
-    // Get Image to Details View
-    func getDetailImage(urlImage: String) {
-        guard let url = URL(string: urlImage) else { return }
-
-        DispatchQueue.main.async {
-            if let dataImage = try? Data(contentsOf: url) {
-                let loadedImage = UIImage(data: dataImage)
-                    self.image = loadedImage
-            }
-        }
     }
 }
