@@ -7,18 +7,22 @@
 
 import UIKit
 
-final class TableViewCell: UITableViewCell {
+class TableViewCell: UITableViewCell {
+
     
-    @IBOutlet private var pokemonImage: UIImageView!
-    @IBOutlet private var name: UILabel!
+    @IBOutlet weak var imageAPI: UIImageView!
+    @IBOutlet weak var name: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        // Initialization code
+        imageAPI.layer.cornerRadius = 15
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
     }
     
-    func setUp(pokemon: Pokemon) {
-        name.text = pokemon.name
-        pokemonImage.sd_setImage(with: URL(string: pokemon.imageUrl))
-    }
 }
-

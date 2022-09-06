@@ -9,7 +9,7 @@ import UIKit
 
 final class DetailViewController: UIViewController {
     
-    var pokemon: Pokemon?
+    var seeDetail: Pokemon?
     
 //    IBOutlets
     @IBOutlet private weak var name: UILabel!
@@ -21,15 +21,12 @@ final class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getUI()
-    }
-    
-    private func getUI() {
-        image.sd_setImage(with: URL(string: pokemon?.imageUrl ?? ""))
-        defense.text = "Defensa: \(pokemon!.defense)"
-        attack.text = "Ataque: \(pokemon!.attack)"
-        typeLabel.text = pokemon?.type
-        descriptionLabel.text = pokemon?.description
-        name.text = pokemon?.name
+
+        image.getDetailImage(urlImage: seeDetail?.imageUrl ?? "")
+        defense.text = "Defensa: \(seeDetail!.defense)"
+        attack.text = "Ataque: \(seeDetail!.attack)"
+        typeLabel.text = seeDetail?.type
+        descriptionLabel.text = seeDetail?.description
+        name.text = seeDetail?.name
     }
 }
